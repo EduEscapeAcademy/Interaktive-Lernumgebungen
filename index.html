@@ -184,7 +184,7 @@
 
     .subject-list {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       align-items: start;
       gap: clamp(1rem, 2.5vw, 1.5rem);
     }
@@ -214,11 +214,18 @@
 
     .summary-content {
       display: grid;
-      grid-template-columns: auto 1fr auto;
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-areas:
+        "image image"
+        "name toggle";
       align-items: center;
-      gap: 0.9rem;
-      min-height: 5.5rem;
-      padding: 1rem 1.15rem;
+      column-gap: 1rem;
+      row-gap: 0.85rem;
+      padding: 0.75rem 0.85rem 1rem;
+    }
+
+    .summary-content > span:not(.toggle-icon) {
+      grid-area: name;
     }
 
     .subject summary::-webkit-details-marker {
@@ -242,18 +249,22 @@
     }
 
     .subject-image {
+      grid-area: image;
       display: block;
-      width: 3.5rem;
-      height: 3.5rem;
-      border: 2px solid var(--border);
-      border-radius: 0.9rem;
+      width: min(100%, 19rem);
+      height: auto;
+      aspect-ratio: 1;
+      margin-inline: auto;
+      border: 1px solid var(--border);
+      border-radius: 1rem;
       background: var(--beige);
-      box-shadow: 0 4px 12px rgba(24, 37, 56, 0.1);
-      object-fit: cover;
+      box-shadow: 0 6px 18px rgba(24, 37, 56, 0.08);
+      object-fit: contain;
       object-position: center;
     }
 
     .toggle-icon {
+      grid-area: toggle;
       position: relative;
       width: 1.35rem;
       height: 1.35rem;
@@ -376,6 +387,18 @@
       }
     }
 
+    @media (max-width: 58rem) {
+      .subject-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 40rem) {
+      .subject-list {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
     @media (max-width: 34rem) {
       .header-inner,
       main,
@@ -388,7 +411,7 @@
       }
 
       .summary-content {
-        min-height: 5rem;
+        padding: 0.65rem 0.7rem 0.9rem;
       }
     }
 
