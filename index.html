@@ -320,6 +320,41 @@
       font-size: 0.95rem;
     }
 
+    .material-link {
+      display: block;
+      padding: 1rem;
+      border: 1px solid #D8C8B0;
+      border-radius: 0.85rem;
+      color: var(--text);
+      background: var(--beige);
+      font-weight: 750;
+      text-decoration: none;
+      box-shadow: 0 5px 14px rgba(24, 37, 56, 0.06);
+    }
+
+    .material-link strong {
+      display: block;
+      margin-bottom: 0.15rem;
+      color: var(--blue);
+      font-size: 1.05rem;
+    }
+
+    .material-link span {
+      color: var(--text-soft);
+      font-size: 0.92rem;
+      font-weight: 500;
+    }
+
+    .material-link:hover {
+      border-color: var(--blue);
+      background: var(--blue-soft);
+    }
+
+    .material-link:focus-visible {
+      outline: 3px solid var(--blue);
+      outline-offset: 3px;
+    }
+
     .site-footer {
       border-top: 1px solid var(--border);
       background: var(--beige);
@@ -420,8 +455,10 @@
             <div class="course-list">
               <section class="course" aria-labelledby="course-spanisch-ef">
                 <h3 id="course-spanisch-ef">EF</h3>
-                <p class="notice">Materialien folgen</p>
-                <!-- Später hier Themen ergänzen; innerhalb der Themen folgen die Lernspiele. -->
+                <a class="material-link" href="spanisch/ef/ser-und-estar/index.html">
+                  <strong>¿Ser o estar?</strong>
+                  <span>Interaktives Lernquiz · 15 Aufgaben</span>
+                </a>
               </section>
 
               <section class="course" aria-labelledby="course-spanisch-q1">

@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Interaktives Spanischquiz zu ser und estar für die Einführungsphase.">
+  <title>¿Ser o estar? – Interaktives Lernquiz</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #173b3c;
+      --ink-soft: #526666;
+      --paper: #fffaf1;
+      --cream: #f6ead7;
+      --white: #ffffff;
+      --teal: #155e63;
+      --teal-dark: #104a4e;
+      --terracotta: #bd4f2e;
+      --terracotta-dark: #96391f;
+      --gold: #d89a26;
+      --line: #d9cdbc;
+      --success: #226b47;
+      --success-bg: #e4f3e9;
+      --retry: #8a3b21;
+      --retry-bg: #fbe7df;
+      --shadow: 0 22px 55px rgba(43, 50, 42, 0.13);
+      --shadow-small: 0 9px 22px rgba(43, 50, 42, 0.09);
+      --radius-xl: 2rem;
+      --radius-lg: 1.25rem;
+      --max-width: 68rem;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html { min-width: 20rem; background: var(--paper); }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 10%, rgba(216, 154, 38, 0.13), transparent 22rem),
+        radial-gradient(circle at 94% 86%, rgba(21, 94, 99, 0.11), transparent 24rem),
+        var(--paper);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button, a { font: inherit; }
+
+    button { -webkit-tap-highlight-color: transparent; }
+
+    a { color: var(--teal-dark); text-underline-offset: 0.2em; }
+
+    :focus-visible {
+      outline: 4px solid var(--gold);
+      outline-offset: 4px;
+    }
+
+    .skip-link {
+      position: fixed;
+      z-index: 20;
+      top: 0.75rem;
+      left: 0.75rem;
+      padding: 0.7rem 1rem;
+      border-radius: 0.6rem;
+      color: var(--white);
+      background: var(--teal-dark);
+      font-weight: 750;
+      transform: translateY(-180%);
+    }
+
+    .skip-link:focus { transform: translateY(0); }
+
+    .site-header {
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 250, 241, 0.92);
+    }
+
+    .header-inner, .app, .footer-inner {
+      width: min(calc(100% - 2rem), var(--max-width));
+      margin-inline: auto;
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      min-height: 4.5rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      margin: 0;
+      color: var(--ink);
+      font-weight: 800;
+      letter-spacing: -0.015em;
+    }
+
+    .brand-mark {
+      width: 1.15rem;
+      height: 1.15rem;
+      border-radius: 0.25rem 0.7rem 0.25rem 0.7rem;
+      background: var(--terracotta);
+      transform: rotate(-8deg);
+    }
+
+    .back-link { font-size: 0.93rem; font-weight: 700; }
+
+    .app { padding-block: clamp(1.5rem, 4vw, 3rem) clamp(3rem, 6vw, 5rem); }
+
+    .screen { display: none; }
+    .screen.is-active { display: block; }
+
+    .panel {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(17rem, 0.9fr);
+      min-height: 28rem;
+    }
+
+    .hero-copy {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: clamp(2rem, 6vw, 4.5rem);
+    }
+
+    .eyebrow {
+      margin: 0 0 0.85rem;
+      color: var(--terracotta-dark);
+      font-size: 0.82rem;
+      font-weight: 850;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+
+    h1 {
+      margin-bottom: 1rem;
+      color: var(--teal-dark);
+      font-size: clamp(3.1rem, 9vw, 6.7rem);
+      line-height: 0.93;
+      letter-spacing: -0.065em;
+    }
+
+    .lead {
+      max-width: 38rem;
+      margin-bottom: 1.6rem;
+      color: var(--ink-soft);
+      font-size: clamp(1.05rem, 2.4vw, 1.3rem);
+    }
+
+    .hero-image, .phase-image, .question-image {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .hero-image { min-height: 25rem; }
+
+    .phase-overview {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.8rem;
+      margin: 0 0 1.8rem;
+    }
+
+    .phase-card {
+      padding: 0.9rem 1rem;
+      border-left: 0.28rem solid var(--gold);
+      border-radius: 0.6rem;
+      background: var(--cream);
+    }
+
+    .phase-card strong { display: block; }
+    .phase-card span { color: var(--ink-soft); font-size: 0.92rem; }
+
+    .primary-button, .next-button, .restart-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 3.25rem;
+      padding: 0.8rem 1.35rem;
+      border: 2px solid var(--terracotta);
+      border-radius: 999px;
+      color: var(--white);
+      background: var(--terracotta);
+      box-shadow: 0 6px 0 var(--terracotta-dark);
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .primary-button { align-self: flex-start; }
+
+    .primary-button:hover, .next-button:hover, .restart-button:hover { background: var(--terracotta-dark); }
+
+    .quiz-shell { display: grid; gap: 1rem; }
+
+    .quiz-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding-inline: 0.25rem;
+    }
+
+    .part-badge {
+      margin: 0;
+      color: var(--terracotta-dark);
+      font-size: 0.9rem;
+      font-weight: 850;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .progress-copy { margin: 0; color: var(--ink-soft); font-weight: 750; }
+
+    .progress-track {
+      overflow: hidden;
+      height: 0.7rem;
+      border-radius: 999px;
+      background: #e9ded0;
+    }
+
+    .progress-fill {
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--terracotta), var(--gold));
+      transition: width 260ms ease;
+    }
+
+    .question-panel {
+      display: grid;
+      grid-template-columns: minmax(15rem, 0.68fr) minmax(0, 1.32fr);
+    }
+
+    .question-visual { min-height: 31rem; background: var(--cream); }
+
+    .question-content { padding: clamp(1.5rem, 5vw, 3.5rem); }
+
+    .question-kicker {
+      margin-bottom: 0.6rem;
+      color: var(--ink-soft);
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+
+    .question-text {
+      margin-bottom: 1.5rem;
+      color: var(--teal-dark);
+      font-size: clamp(1.65rem, 4.5vw, 2.7rem);
+      line-height: 1.2;
+      letter-spacing: -0.035em;
+    }
+
+    .verb-hint {
+      display: inline-block;
+      margin-left: 0.25em;
+      color: var(--terracotta-dark);
+      font-size: 0.65em;
+      font-weight: 750;
+      letter-spacing: 0;
+    }
+
+    .answers {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .answer-button {
+      min-height: 3.6rem;
+      padding: 0.75rem 1rem;
+      border: 2px solid var(--line);
+      border-radius: 0.85rem;
+      color: var(--ink);
+      background: var(--white);
+      box-shadow: var(--shadow-small);
+      font-size: 1.12rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .answer-button:hover:not(:disabled) { border-color: var(--teal); background: #f1f8f6; }
+    .answer-button.is-wrong { border-color: var(--retry); color: var(--retry); background: var(--retry-bg); }
+    .answer-button.is-correct { border-color: var(--success); color: var(--success); background: var(--success-bg); }
+    .answer-button:disabled { cursor: default; opacity: 0.72; }
+    .answer-button.is-correct:disabled { opacity: 1; }
+
+    .feedback {
+      min-height: 4.25rem;
+      margin: 0;
+      padding: 0.9rem 1rem;
+      border-radius: 0.8rem;
+      background: var(--cream);
+    }
+
+    .feedback strong { display: block; margin-bottom: 0.1rem; }
+    .feedback.is-retry { color: var(--retry); background: var(--retry-bg); }
+    .feedback.is-success { color: var(--success); background: var(--success-bg); }
+
+    .question-actions {
+      display: flex;
+      justify-content: flex-end;
+      min-height: 4.3rem;
+      padding-top: 1rem;
+    }
+
+    .next-button[hidden] { display: none; }
+
+    .interlude {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(16rem, 0.75fr);
+    }
+
+    .interlude-copy, .results-copy { padding: clamp(2rem, 6vw, 4.5rem); }
+
+    .interlude h2, .results h2 {
+      margin-bottom: 1rem;
+      color: var(--teal-dark);
+      font-size: clamp(2.2rem, 6vw, 4.4rem);
+      line-height: 1.02;
+      letter-spacing: -0.05em;
+    }
+
+    .memory-aid {
+      display: grid;
+      gap: 0.75rem;
+      margin: 1.5rem 0 2rem;
+      padding: 0;
+      list-style: none;
+    }
+
+    .memory-aid li {
+      padding: 0.95rem 1rem;
+      border-left: 0.3rem solid var(--gold);
+      border-radius: 0 0.75rem 0.75rem 0;
+      background: var(--cream);
+    }
+
+    .memory-aid strong { color: var(--terracotta-dark); }
+
+    .results {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(17rem, 0.8fr);
+    }
+
+    .score-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.8rem;
+      margin: 1.7rem 0;
+    }
+
+    .score-card {
+      padding: 1rem;
+      border: 1px solid var(--line);
+      border-radius: 0.9rem;
+      background: var(--cream);
+    }
+
+    .score-card span { display: block; color: var(--ink-soft); font-size: 0.85rem; font-weight: 750; }
+    .score-card strong { display: block; color: var(--teal-dark); font-size: 1.6rem; }
+    .score-card.total { border-color: var(--gold); background: #fff2cf; }
+
+    .result-message { margin-bottom: 1.5rem; color: var(--ink-soft); font-size: 1.08rem; }
+
+    .result-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.3rem; }
+
+    .site-footer { border-top: 1px solid var(--line); }
+    .footer-inner { padding-block: 1.4rem; }
+    .footer-inner p { margin: 0; color: var(--ink-soft); font-size: 0.9rem; }
+
+    @media (max-width: 48rem) {
+      .hero, .question-panel, .interlude, .results { grid-template-columns: 1fr; }
+      .hero-image { max-height: 18rem; min-height: 14rem; }
+      .question-visual { min-height: 0; height: clamp(11rem, 42vw, 18rem); }
+      .phase-image { max-height: 18rem; }
+      .question-content { order: 2; }
+      .score-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 34rem) {
+      .header-inner, .app, .footer-inner { width: min(calc(100% - 1.15rem), var(--max-width)); }
+      .header-inner { align-items: flex-start; flex-direction: column; justify-content: center; padding-block: 0.8rem; }
+      .panel { border-radius: 1.25rem; }
+      .hero-copy, .question-content, .interlude-copy, .results-copy { padding: 1.35rem; }
+      .phase-overview, .answers { grid-template-columns: 1fr; }
+      .answer-button { min-height: 3.35rem; }
+      .quiz-topbar { align-items: flex-start; }
+      .progress-copy { text-align: right; }
+      .question-actions { justify-content: stretch; }
+      .next-button { width: 100%; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+
+    @media (prefers-contrast: more) {
+      :root { --ink-soft: #263f40; --line: #687a76; }
+      .panel, .answer-button, .score-card { border-width: 2px; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#quiz-app">Direkt zum Quiz</a>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <p class="brand"><span class="brand-mark" aria-hidden="true"></span>¿Ser o estar?</p>
+      <a class="back-link" href="../../../index.html">← Zurück zu den interaktiven Lernumgebungen</a>
+    </div>
+  </header>
+
+  <main class="app" id="quiz-app">
+    <section class="screen is-active" id="start-screen" aria-labelledby="start-title">
+      <div class="panel hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Spanisch · Einführungsphase</p>
+          <h1 id="start-title">¿Ser o estar?</h1>
+          <p class="lead">Trainiere zuerst die Formen. Danach entscheidest du selbst, welches Verb passt.</p>
+          <div class="phase-overview" aria-label="Die zwei Teile des Quiz">
+            <div class="phase-card"><strong>Teil 1 · 8 Aufgaben</strong><span>Formen von ser und estar</span></div>
+            <div class="phase-card"><strong>Teil 2 · 7 Aufgaben</strong><span>Verb und Form auswählen</span></div>
+          </div>
+          <button class="primary-button" id="start-button" type="button">Quiz starten</button>
+        </div>
+        <img class="hero-image" src="assets/images/klasse.jpg" alt="Jugendliche lernen gemeinsam in einem modernen Klassenraum." width="1200" height="800">
+      </div>
+    </section>
+
+    <section class="screen" id="quiz-screen" aria-labelledby="question-heading">
+      <div class="quiz-shell">
+        <div class="quiz-topbar">
+          <p class="part-badge" id="part-label">Teil 1</p>
+          <p class="progress-copy" id="progress-copy">Aufgabe 1 von 15</p>
+        </div>
+        <div class="progress-track" role="progressbar" aria-label="Quizfortschritt" aria-valuemin="1" aria-valuemax="15" aria-valuenow="1">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <article class="panel question-panel">
+          <div class="question-visual">
+            <img class="question-image" id="question-image" src="assets/images/konjugation.jpg" alt="Geordnete Lernkarten und Stifte als Symbol für Konjugationsübungen." width="1200" height="800">
+          </div>
+          <div class="question-content">
+            <p class="question-kicker" id="question-kicker">Wähle die passende Form.</p>
+            <h2 class="question-text" id="question-heading"></h2>
+            <div class="answers" id="answers" aria-label="Antwortmöglichkeiten"></div>
+            <div class="feedback" id="feedback" role="status" aria-live="polite">Wähle eine Antwort aus.</div>
+            <div class="question-actions">
+              <button class="next-button" id="next-button" type="button" hidden>Nächste Aufgabe</button>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="screen" id="interlude-screen" aria-labelledby="interlude-title">
+      <div class="panel interlude">
+        <div class="interlude-copy">
+          <p class="eyebrow">8 von 15 Aufgaben geschafft</p>
+          <h2 id="interlude-title">Teil 1 geschafft! Jetzt entscheidest du selbst: ser oder estar?</h2>
+          <ul class="memory-aid">
+            <li><strong>ser:</strong> Wer oder wie ist jemand oder etwas? Woher kommt jemand?</li>
+            <li><strong>estar:</strong> Wo befindet sich jemand oder etwas?</li>
+          </ul>
+          <button class="primary-button" id="continue-button" type="button">Mit Teil 2 weiter</button>
+        </div>
+        <img class="phase-image" src="assets/images/ort-herkunft.jpg" alt="Stilisierte Stadt und abstrakte Landkarte mit markierten Orten und Wegen." width="1200" height="800">
+      </div>
+    </section>
+
+    <section class="screen" id="result-screen" aria-labelledby="result-title">
+      <div class="panel results">
+        <div class="results-copy">
+          <p class="eyebrow">Quiz beendet</p>
+          <h2 id="result-title">¡Muy bien!</h2>
+          <div class="score-grid" aria-label="Deine Ergebnisse">
+            <div class="score-card"><span>Ergebnis Teil 1</span><strong id="score-part-1">0 von 8</strong></div>
+            <div class="score-card"><span>Ergebnis Teil 2</span><strong id="score-part-2">0 von 7</strong></div>
+            <div class="score-card total"><span>Gesamtergebnis</span><strong id="score-total">0 von 15</strong></div>
+          </div>
+          <p class="result-message" id="result-message"></p>
+          <div class="result-actions">
+            <button class="restart-button" id="restart-button" type="button">Quiz neu starten</button>
+            <a href="../../../index.html">Zurück zu den interaktiven Lernumgebungen</a>
+          </div>
+        </div>
+        <img class="phase-image" src="assets/images/bibliothek.jpg" alt="Bücher und ein Rucksack in einer modernen Bibliothek." width="1200" height="800">
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner"><p>Deine Antworten und Ergebnisse werden nicht gespeichert oder übertragen.</p></div>
+  </footer>
+
+  <script>
+    const questions = [
+      { text: "Yo ___ estudiante.", hint: "ser", answer: "soy", options: ["soy", "eres", "estoy"], explanation: "Die Form von ser für yo lautet soy.", image: "konjugation" },
+      { text: "Tú ___ en la clase.", hint: "estar", answer: "estás", options: ["estoy", "estás", "está"], explanation: "Die Form von estar für tú lautet estás.", image: "klasse" },
+      { text: "Ella ___ de Perú.", hint: "ser", answer: "es", options: ["soy", "eres", "es"], explanation: "Die Form von ser für él, ella und usted lautet es.", image: "ort-herkunft" },
+      { text: "Nosotros ___ en Madrid.", hint: "estar", answer: "estamos", options: ["estoy", "estáis", "estamos"], explanation: "Die Form von estar für nosotros und nosotras lautet estamos.", image: "ort-herkunft" },
+      { text: "Vosotros ___ amigos.", hint: "ser", answer: "sois", options: ["somos", "sois", "son"], explanation: "Die Form von ser für vosotros und vosotras lautet sois.", image: "klasse" },
+      { text: "Ellas ___ en la escuela.", hint: "estar", answer: "están", options: ["estamos", "estáis", "están"], explanation: "Die Form von estar für ellos, ellas und ustedes lautet están.", image: "klasse" },
+      { text: "Tú ___ de Alemania.", hint: "ser", answer: "eres", options: ["soy", "eres", "es"], explanation: "Die Form von ser für tú lautet eres.", image: "ort-herkunft" },
+      { text: "Yo ___ en casa.", hint: "estar", answer: "estoy", options: ["estoy", "estás", "está"], explanation: "Die Form von estar für yo lautet estoy.", image: "konjugation" },
+      { text: "Nosotros ___ alumnos de español.", answer: "somos", options: ["somos", "estamos", "son", "sois"], explanation: "Für Identität beziehungsweise Zugehörigkeit verwendet man ser. Die Form für nosotros lautet somos.", image: "klasse" },
+      { text: "Los libros ___ en la mochila.", answer: "están", options: ["son", "están", "estáis", "es"], explanation: "Es geht um den Ort der Bücher. Für Ortsangaben verwendet man estar. Die Form für los libros lautet están.", image: "bibliothek" },
+      { text: "Mi amigo Pablo ___ muy simpático.", answer: "es", options: ["es", "está", "soy", "son"], explanation: "Hier wird Pablo beschrieben. Dafür verwendet man ser. Die Form für Pablo lautet es.", image: "klasse" },
+      { text: "Vosotras ___ en la biblioteca.", answer: "estáis", options: ["sois", "estáis", "estamos", "están"], explanation: "Es geht um euren Aufenthaltsort. Dafür verwendet man estar. Die Form für vosotras lautet estáis.", image: "bibliothek" },
+      { text: "Carlos y Lucía ___ de México.", answer: "son", options: ["están", "somos", "son", "es"], explanation: "Für die Herkunft verwendet man ser. Die Form für Carlos y Lucía lautet son.", image: "ort-herkunft" },
+      { text: "El profesor ___ en el aula.", answer: "está", options: ["es", "está", "estoy", "están"], explanation: "Es geht um den Aufenthaltsort des Lehrers. Dafür verwendet man estar. Die Form für el profesor lautet está.", image: "klasse" },
+      { text: "¿Usted ___ la profesora de español?", answer: "es", options: ["está", "eres", "es", "soy"], explanation: "Es geht um die Identität der Person. Dafür verwendet man ser. Die Form für usted lautet es.", image: "klasse" }
+    ];
+
+    const imageData = {
+      konjugation: { src: "assets/images/konjugation.jpg", alt: "Geordnete Lernkarten und Stifte als Symbol für Konjugationsübungen." },
+      klasse: { src: "assets/images/klasse.jpg", alt: "Jugendliche lernen gemeinsam in einem modernen Klassenraum." },
+      "ort-herkunft": { src: "assets/images/ort-herkunft.jpg", alt: "Stilisierte Stadt und abstrakte Landkarte mit markierten Orten und Wegen." },
+      bibliothek: { src: "assets/images/bibliothek.jpg", alt: "Bücher und ein Rucksack in einer modernen Bibliothek." }
+    };
+
+    const screens = [...document.querySelectorAll(".screen")];
+    const startButton = document.querySelector("#start-button");
+    const continueButton = document.querySelector("#continue-button");
+    const restartButton = document.querySelector("#restart-button");
+    const nextButton = document.querySelector("#next-button");
+    const questionHeading = document.querySelector("#question-heading");
+    const questionKicker = document.querySelector("#question-kicker");
+    const partLabel = document.querySelector("#part-label");
+    const progressCopy = document.querySelector("#progress-copy");
+    const progressTrack = document.querySelector("[role='progressbar']");
+    const progressFill = document.querySelector("#progress-fill");
+    const answers = document.querySelector("#answers");
+    const feedback = document.querySelector("#feedback");
+    const questionImage = document.querySelector("#question-image");
+
+    let currentIndex = 0;
+    let scores = [0, 0];
+    let firstAttempt = true;
+    let answered = false;
+
+    function showScreen(id, focusTarget) {
+      screens.forEach((screen) => {
+        const active = screen.id === id;
+        screen.classList.toggle("is-active", active);
+        screen.setAttribute("aria-hidden", String(!active));
+      });
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      if (focusTarget) requestAnimationFrame(() => focusTarget.focus());
+    }
+
+    function renderQuestion() {
+      const question = questions[currentIndex];
+      const part = currentIndex < 8 ? 1 : 2;
+      const picture = imageData[question.image];
+
+      firstAttempt = true;
+      answered = false;
+      partLabel.textContent = `Teil ${part}`;
+      progressCopy.textContent = `Aufgabe ${currentIndex + 1} von ${questions.length}`;
+      progressTrack.setAttribute("aria-valuenow", String(currentIndex + 1));
+      progressFill.style.width = `${((currentIndex + 1) / questions.length) * 100}%`;
+      questionKicker.textContent = part === 1 ? "Wähle nur die passende konjugierte Form." : "Wähle das richtige Verb in der passenden Form.";
+      questionHeading.textContent = question.text;
+      if (question.hint) {
+        const hint = document.createElement("span");
+        hint.className = "verb-hint";
+        hint.textContent = `(${question.hint})`;
+        questionHeading.append(" ", hint);
+      }
+      questionImage.src = picture.src;
+      questionImage.alt = picture.alt;
+      answers.replaceChildren();
+
+      question.options.forEach((option) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "answer-button";
+        button.textContent = option;
+        button.addEventListener("click", () => checkAnswer(button, option));
+        answers.append(button);
+      });
+
+      feedback.className = "feedback";
+      feedback.textContent = "Wähle eine Antwort aus.";
+      nextButton.hidden = true;
+      nextButton.textContent = currentIndex === questions.length - 1 ? "Ergebnis ansehen" : "Nächste Aufgabe";
+      showScreen("quiz-screen", questionHeading);
+    }
+
+    function checkAnswer(button, option) {
+      if (answered) return;
+      const question = questions[currentIndex];
+
+      if (option === question.answer) {
+        answered = true;
+        button.classList.add("is-correct");
+        if (firstAttempt) scores[currentIndex < 8 ? 0 : 1] += 1;
+        [...answers.children].forEach((answerButton) => { answerButton.disabled = true; });
+        feedback.className = "feedback is-success";
+        feedback.innerHTML = `<strong>Richtig!</strong>${question.explanation}`;
+        nextButton.hidden = false;
+        nextButton.focus();
+      } else {
+        firstAttempt = false;
+        button.classList.add("is-wrong");
+        button.disabled = true;
+        feedback.className = "feedback is-retry";
+        feedback.innerHTML = "<strong>Noch nicht.</strong>Versuche es noch einmal.";
+        const nextChoice = [...answers.children].find((answerButton) => !answerButton.disabled);
+        if (nextChoice) nextChoice.focus();
+      }
+    }
+
+    function finishQuiz() {
+      const total = scores[0] + scores[1];
+      document.querySelector("#score-part-1").textContent = `${scores[0]} von 8`;
+      document.querySelector("#score-part-2").textContent = `${scores[1]} von 7`;
+      document.querySelector("#score-total").textContent = `${total} von 15`;
+
+      let title = "Weiter üben – du bist auf dem Weg!";
+      let message = "Du hast jede Aufgabe gelöst. Wiederhole das Quiz und achte besonders darauf: ser beschreibt Identität, Herkunft, Zugehörigkeit und Eigenschaften; estar zeigt hier den Ort.";
+      if (total >= 14) {
+        title = "¡Excelente!";
+        message = "Du unterscheidest die Formen und Verwendungen schon sehr sicher. Stark gemacht!";
+      } else if (total >= 11) {
+        title = "¡Muy bien!";
+        message = "Das klappt schon richtig gut. Mit einer weiteren Runde sitzen auch die letzten Formen sicher.";
+      } else if (total >= 8) {
+        title = "¡Bien hecho!";
+        message = "Die Grundlage stimmt. Schau dir bei einer weiteren Runde besonders die Personen und Endungen an.";
+      }
+
+      document.querySelector("#result-title").textContent = title;
+      document.querySelector("#result-message").textContent = message;
+      showScreen("result-screen", document.querySelector("#result-title"));
+    }
+
+    function restartQuiz() {
+      currentIndex = 0;
+      scores = [0, 0];
+      firstAttempt = true;
+      answered = false;
+      showScreen("start-screen", document.querySelector("#start-title"));
+    }
+
+    startButton.addEventListener("click", () => {
+      currentIndex = 0;
+      scores = [0, 0];
+      renderQuestion();
+    });
+
+    nextButton.addEventListener("click", () => {
+      if (!answered) return;
+      if (currentIndex === 7) {
+        currentIndex = 8;
+        showScreen("interlude-screen", document.querySelector("#interlude-title"));
+      } else if (currentIndex === questions.length - 1) {
+        finishQuiz();
+      } else {
+        currentIndex += 1;
+        renderQuestion();
+      }
+    });
+
+    continueButton.addEventListener("click", renderQuestion);
+    restartButton.addEventListener("click", restartQuiz);
+  </script>
+</body>
+</html>
