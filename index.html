@@ -3,10 +3,488 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Interaktive Lernumgebungen und digitale Lernmaterialien für den Unterricht.">
   <title>Interaktive Lernumgebungen</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --blue: #004AAD;
+      --red: #ED2F29;
+      --white: #FFFFFF;
+      --beige: #F7F1E6;
+      --text: #1B1F24;
+      --text-soft: #4A5058;
+      --blue-soft: #EDF4FF;
+      --border: #D7DDE5;
+      --shadow: 0 16px 40px rgba(24, 37, 56, 0.09);
+      --shadow-small: 0 8px 22px rgba(24, 37, 56, 0.07);
+      --radius-large: 2rem;
+      --radius-medium: 1.25rem;
+      --page-width: 72rem;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      min-width: 20rem;
+      background: var(--white);
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: var(--text);
+      background: var(--white);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 1rem;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .skip-link {
+      position: fixed;
+      z-index: 10;
+      top: 0.75rem;
+      left: 0.75rem;
+      padding: 0.7rem 1rem;
+      border-radius: 0.6rem;
+      color: var(--white);
+      background: var(--blue);
+      font-weight: 700;
+      transform: translateY(-200%);
+    }
+
+    .skip-link:focus {
+      outline: 3px solid var(--red);
+      outline-offset: 3px;
+      transform: translateY(0);
+    }
+
+    .site-header {
+      border-top: 0.35rem solid var(--red);
+      border-bottom: 1px solid var(--border);
+      background: var(--white);
+    }
+
+    .header-inner,
+    main,
+    .footer-inner {
+      width: min(calc(100% - 2rem), var(--page-width));
+      margin-inline: auto;
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      min-height: 4.75rem;
+    }
+
+    .site-title {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 0;
+      color: var(--text);
+      font-size: clamp(0.95rem, 2vw, 1.08rem);
+      font-weight: 750;
+      letter-spacing: 0.01em;
+    }
+
+    .site-title::before {
+      width: 0.75rem;
+      height: 0.75rem;
+      flex: 0 0 auto;
+      border-radius: 0.2rem;
+      background: var(--red);
+      content: "";
+      transform: rotate(45deg);
+    }
+
+    main {
+      padding-block: clamp(1.5rem, 5vw, 4.5rem) clamp(3.5rem, 7vw, 6rem);
+    }
+
+    .welcome {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      padding: clamp(2rem, 7vw, 5.25rem);
+      border: 1px solid #E7DDCC;
+      border-radius: var(--radius-large);
+      background: var(--beige);
+      box-shadow: var(--shadow);
+    }
+
+    .welcome::after {
+      position: absolute;
+      z-index: -1;
+      top: -7rem;
+      right: -5rem;
+      width: clamp(13rem, 31vw, 23rem);
+      aspect-ratio: 1;
+      border: clamp(1.25rem, 3.5vw, 2.5rem) solid rgba(0, 74, 173, 0.08);
+      border-radius: 50%;
+      content: "";
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      max-width: 13ch;
+      margin-bottom: 0;
+      color: var(--blue);
+      font-size: clamp(2.35rem, 8vw, 5.5rem);
+      font-weight: 780;
+      letter-spacing: -0.05em;
+      line-height: 1;
+      text-wrap: balance;
+    }
+
+    .welcome p {
+      max-width: 42rem;
+      margin: clamp(1.25rem, 3vw, 1.8rem) 0 0;
+      color: var(--text-soft);
+      font-size: clamp(1.08rem, 2.2vw, 1.3rem);
+    }
+
+    .subjects {
+      padding-top: clamp(3rem, 7vw, 5.5rem);
+      scroll-margin-top: 1rem;
+    }
+
+    .section-heading {
+      position: relative;
+      width: fit-content;
+      margin-bottom: clamp(1.5rem, 3vw, 2.25rem);
+      color: var(--blue);
+      font-size: clamp(1.75rem, 4vw, 2.55rem);
+      line-height: 1.15;
+      letter-spacing: -0.025em;
+    }
+
+    .section-heading::after {
+      display: block;
+      width: 3.25rem;
+      height: 0.25rem;
+      margin-top: 0.75rem;
+      border-radius: 999px;
+      background: var(--red);
+      content: "";
+    }
+
+    .subject-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+      align-items: start;
+      gap: clamp(1rem, 2.5vw, 1.5rem);
+    }
+
+    .subject {
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-medium);
+      background: var(--white);
+      box-shadow: var(--shadow-small);
+    }
+
+    .subject[open] {
+      border-color: var(--blue);
+      box-shadow: 0 12px 30px rgba(0, 74, 173, 0.12);
+    }
+
+    .subject summary {
+      color: var(--blue);
+      background: var(--white);
+      font-size: 1.15rem;
+      font-weight: 750;
+      line-height: 1.3;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .summary-content {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 0.9rem;
+      min-height: 5.5rem;
+      padding: 1rem 1.15rem;
+    }
+
+    .subject summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .subject summary::marker {
+      content: "";
+    }
+
+    .subject[open] summary {
+      background: var(--blue-soft);
+    }
+
+    .subject summary:focus-visible {
+      position: relative;
+      z-index: 1;
+      outline: 3px solid var(--blue);
+      outline-offset: -4px;
+      border-radius: calc(var(--radius-medium) - 0.2rem);
+    }
+
+    .subject-image {
+      display: block;
+      width: 3.5rem;
+      height: 3.5rem;
+      border: 2px solid var(--border);
+      border-radius: 0.9rem;
+      background: var(--beige);
+      box-shadow: 0 4px 12px rgba(24, 37, 56, 0.1);
+      object-fit: cover;
+      object-position: center;
+    }
+
+    .toggle-icon {
+      position: relative;
+      width: 1.35rem;
+      height: 1.35rem;
+      border-radius: 50%;
+      background: var(--blue);
+    }
+
+    .toggle-icon::before,
+    .toggle-icon::after {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0.7rem;
+      height: 2px;
+      border-radius: 999px;
+      background: var(--white);
+      content: "";
+      transform: translate(-50%, -50%);
+      transition: transform 180ms ease;
+    }
+
+    .toggle-icon::after {
+      transform: translate(-50%, -50%) rotate(90deg);
+    }
+
+    .subject[open] .toggle-icon::after {
+      transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    .subject-content {
+      padding: 1.25rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .notice {
+      margin: 0;
+      padding: 1rem 1.1rem;
+      border-left: 0.3rem solid var(--red);
+      border-radius: 0 0.75rem 0.75rem 0;
+      color: var(--text);
+      background: var(--beige);
+    }
+
+    .course-list {
+      display: grid;
+      gap: 0.85rem;
+    }
+
+    .course {
+      padding: 1rem;
+      border: 1px solid var(--border);
+      border-radius: 0.9rem;
+      background: var(--white);
+    }
+
+    .course h3 {
+      margin-bottom: 0.65rem;
+      color: var(--blue);
+      font-size: 1.05rem;
+    }
+
+    .course .notice {
+      padding-block: 0.75rem;
+      font-size: 0.95rem;
+    }
+
+    .site-footer {
+      border-top: 1px solid var(--border);
+      background: var(--beige);
+    }
+
+    .footer-inner {
+      padding-block: 1.5rem;
+    }
+
+    .footer-inner p {
+      margin: 0;
+      color: var(--text-soft);
+      font-size: 0.95rem;
+    }
+
+    @media (hover: hover) {
+      .subject summary:hover {
+        background: var(--blue-soft);
+      }
+    }
+
+    @media (max-width: 34rem) {
+      .header-inner,
+      main,
+      .footer-inner {
+        width: min(calc(100% - 1.25rem), var(--page-width));
+      }
+
+      .welcome {
+        border-radius: 1.5rem;
+      }
+
+      .summary-content {
+        min-height: 5rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+
+    @media (prefers-contrast: more) {
+      :root {
+        --text-soft: #262B31;
+        --border: #68717C;
+      }
+
+      .subject,
+      .course,
+      .welcome {
+        border-width: 2px;
+      }
+
+      .subject summary:focus-visible {
+        outline-width: 4px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <h1>Interaktive Lernumgebungen</h1>
-  <p>Willkommen! Hier entstehen meine digitalen Lernmaterialien.</p>
+  <a class="skip-link" href="#faecher">Zu den Fachbereichen</a>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <p class="site-title">Interaktive Lernumgebungen</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="welcome" aria-labelledby="page-title">
+      <h1 id="page-title">Interaktive Lernumgebungen</h1>
+      <p>Willkommen! Hier entstehen meine digitalen Lernmaterialien.</p>
+    </section>
+
+    <section class="subjects" id="faecher" aria-labelledby="subjects-heading">
+      <h2 class="section-heading" id="subjects-heading">Fachbereiche</h2>
+
+      <div class="subject-list">
+        <details class="subject">
+          <summary>
+            <span class="summary-content">
+              <img class="subject-image" src="assets/images/spanisch.png" alt="" aria-hidden="true" width="56" height="56">
+              <span>Spanisch</span>
+              <span class="toggle-icon" aria-hidden="true"></span>
+            </span>
+          </summary>
+          <div class="subject-content">
+            <div class="course-list">
+              <section class="course" aria-labelledby="course-spanisch-ef">
+                <h3 id="course-spanisch-ef">EF</h3>
+                <p class="notice">Materialien folgen</p>
+                <!-- Später hier Themen ergänzen; innerhalb der Themen folgen die Lernspiele. -->
+              </section>
+
+              <section class="course" aria-labelledby="course-spanisch-q1">
+                <h3 id="course-spanisch-q1">Q1</h3>
+                <p class="notice">Materialien folgen</p>
+                <!-- Später hier Themen ergänzen; innerhalb der Themen folgen die Lernspiele. -->
+              </section>
+
+              <!-- Weitere Jahrgänge oder Kurse für Spanisch hier ergänzen. -->
+            </div>
+          </div>
+        </details>
+
+        <details class="subject">
+          <summary>
+            <span class="summary-content">
+              <img class="subject-image" src="assets/images/deutsch.png" alt="" aria-hidden="true" width="56" height="56">
+              <span>Deutsch</span>
+              <span class="toggle-icon" aria-hidden="true"></span>
+            </span>
+          </summary>
+          <div class="subject-content">
+            <div class="course-list">
+              <section class="course" aria-labelledby="course-ef">
+                <h3 id="course-ef">EF</h3>
+                <p class="notice">Materialien folgen</p>
+                <!-- Später hier Themen ergänzen; innerhalb der Themen folgen die Lernspiele. -->
+              </section>
+
+              <section class="course" aria-labelledby="course-q1">
+                <h3 id="course-q1">Q1</h3>
+                <p class="notice">Materialien folgen</p>
+                <!-- Später hier Themen ergänzen; innerhalb der Themen folgen die Lernspiele. -->
+              </section>
+
+              <!-- Weitere Jahrgänge oder Kurse für Deutsch hier ergänzen. -->
+            </div>
+          </div>
+        </details>
+
+        <details class="subject">
+          <summary>
+            <span class="summary-content">
+              <img class="subject-image" src="assets/images/sonstiges.png" alt="" aria-hidden="true" width="56" height="56">
+              <span>Sonstiges</span>
+              <span class="toggle-icon" aria-hidden="true"></span>
+            </span>
+          </summary>
+          <div class="subject-content">
+            <p class="notice">Hier entstehen gerade neue Lernmaterialien.</p>
+            <!-- Später hier Kurse oder Sammlungen ergänzen. Darunter folgen Themen und Lernspiele. -->
+          </div>
+        </details>
+
+        <!-- Weitere Fachbereiche als details-Elemente innerhalb dieser Liste ergänzen. -->
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p>Interaktive Lernumgebungen für den Unterricht</p>
+    </div>
+  </footer>
 </body>
 </html>
