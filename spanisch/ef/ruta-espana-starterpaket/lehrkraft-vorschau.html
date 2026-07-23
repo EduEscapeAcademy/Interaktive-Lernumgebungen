@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#17324d">
+  <meta name="description" content="Nicht-speichernde Kontrollansicht der Spanisch-Starter.">
+  <title>Starter kontrollieren · Ruta por España</title>
+  <link rel="stylesheet" href="styles.css?v=2.0.1">
+  <link rel="stylesheet" href="preview.css?v=2.0.1">
+</head>
+<body>
+  <a class="skip-link" href="#preview-main">Zum Inhalt springen</a>
+  <header class="site-header">
+    <a class="brand" href="lehrkraft.html"><span class="brand-mark" aria-hidden="true">R</span><span><strong>Ruta por España</strong><small>Lehrkraftvorschau</small></span></a>
+    <a class="button button-quiet" href="lehrkraft.html">← Zur Auswertung</a>
+  </header>
+  <main id="preview-main" class="preview-shell">
+    <aside class="preview-sidebar" aria-label="Starter auswählen">
+      <p class="eyebrow">Kontrollansicht</p>
+      <h1>Starter direkt prüfen</h1>
+      <p>Diese Ansicht liest nur die Inhaltsdaten. Schülerfortschritte werden weder gelesen noch verändert.</p>
+      <nav id="preview-starters" class="preview-starter-list"></nav>
+    </aside>
+    <section class="preview-workspace" aria-live="polite">
+      <header class="preview-toolbar">
+        <div><p id="preview-kicker" class="eyebrow"></p><h2 id="preview-title"></h2><p id="preview-subtitle"></p></div>
+        <div class="preview-actions">
+          <button id="reshuffle-button" class="button button-quiet" type="button">↻ Neu mischen</button>
+          <button id="solutions-button" class="button button-secondary" type="button" aria-pressed="true">Lösungen ausblenden</button>
+          <a id="student-preview-link" class="button button-primary" href="index.html?preview=S001">Im Schülermodus öffnen</a>
+        </div>
+      </header>
+      <nav id="preview-blocks" class="preview-block-tabs" aria-label="Aufgabenblock auswählen"></nav>
+      <div id="preview-content"></div>
+    </section>
+  </main>
+  <script src="data.js?v=2.0.0"></script>
+  <script src="preview.js?v=2.0.0"></script>
+</body>
+</html>

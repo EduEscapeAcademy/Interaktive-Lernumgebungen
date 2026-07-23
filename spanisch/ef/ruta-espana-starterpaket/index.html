@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#17324d">
+  <meta name="description" content="Elf kurze Spanisch-Starter für den Vorkurs.">
+  <title>Ruta por España – Spanisch-Starter</title>
+  <link rel="stylesheet" href="styles.css?v=2.0.1">
+</head>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+  <header class="site-header">
+    <a class="brand" href="./" aria-label="Ruta por España – Startseite">
+      <span class="brand-mark" aria-hidden="true">R</span>
+      <span><strong>Ruta por España</strong><small>Spanisch · Vorkurs</small></span>
+    </a>
+    <button id="profile-button" class="button button-quiet" type="button" aria-label="Anzeigenamen ändern">Profil</button>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <section id="home-view" class="view">
+      <div class="launch-grid">
+        <div class="hero hero-compact">
+          <div class="hero-copy">
+            <p class="eyebrow">Tu ruta empieza aquí</p>
+            <h1>¡Vamos! Tres minutos de español.</h1>
+            <div id="welcome-line" class="welcome-line" aria-live="polite"></div>
+          </div>
+          <img src="assets/ruta-hero.webp" alt="Stilisierte Reisepostkarten mit Küste, Stadt, Kompass und Reiseroute" width="1600" height="914">
+        </div>
+        <article class="card today-card">
+          <div>
+            <p class="eyebrow">Hoy</p>
+            <h2 id="today-heading">Heutigen Starter öffnen</h2>
+            <p>Gib den Code ein, den deine Lehrkraft nennt.</p>
+          </div>
+          <form id="code-form" class="code-form" novalidate>
+            <label for="access-code">Zugangscode</label>
+            <div class="input-row">
+              <input id="access-code" name="access-code" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="z. B. COSTA 29" required>
+              <button class="button button-primary" type="submit">Öffnen</button>
+            </div>
+            <p id="code-message" class="form-message" aria-live="polite"></p>
+          </form>
+        </article>
+      </div>
+
+      <section class="route-section" aria-labelledby="route-heading">
+        <div class="section-heading"><div><p class="eyebrow">Pasaporte de aprendizaje</p><h2 id="route-heading">Deine Route</h2></div><p id="route-summary"></p></div>
+        <div id="route-grid" class="route-grid" aria-label="Elf Stationen deiner Lernroute"></div>
+        <p class="autosave-note"><span aria-hidden="true">✓</span><span><strong>Automatisch gespeichert.</strong> Du musst nichts weiter tun und kannst den Tab offen lassen, neu laden oder schließen.</span></p>
+      </section>
+
+      <section class="dashboard secondary-dashboard" aria-label="Nachholen und Üben">
+
+        <article class="card">
+          <span class="card-icon" aria-hidden="true">↗</span>
+          <h2>Offene Starter nachholen</h2>
+          <p>Frühere Stationen blockieren deinen Weg nicht.</p>
+          <div id="makeup-list" class="starter-list"></div>
+        </article>
+
+        <article class="card">
+          <span class="card-icon" aria-hidden="true">↻</span>
+          <h2>Erledigte Starter üben</h2>
+          <p>Wiederholungen bleiben getrennt vom ersten Ergebnis.</p>
+          <div id="practice-list" class="starter-list"></div>
+        </article>
+      </section>
+
+      <section class="backup-section" aria-label="Sicherung und Gerätewechsel">
+        <details class="backup-panel">
+          <summary><span><span class="card-icon" aria-hidden="true">↓</span><strong>Sicherung und Gerätewechsel</strong></span><span class="summary-hint">Nur bei Bedarf</span></summary>
+          <div class="backup-content">
+            <p>Eine Sicherungsdatei brauchst du nur für eine Sicherheitskopie, eine vereinbarte Teams-Abgabe, einen Gerätewechsel oder nach gelöschten Browserdaten.</p>
+            <div class="button-stack">
+              <button id="export-button" class="button button-secondary" type="button">Sicherungsdatei speichern</button>
+              <label class="button button-quiet file-button">Sicherungsdatei einlesen<input id="import-input" type="file" accept=".txt,text/plain"></label>
+            </div>
+          </div>
+        </details>
+      </section>
+    </section>
+
+    <section id="starter-view" class="view" hidden aria-labelledby="starter-title">
+      <div class="starter-shell">
+        <div class="starter-topbar">
+          <button id="leave-starter" class="button button-quiet" type="button">← Zur Übersicht</button>
+          <div class="progress-wrap"><span id="progress-label">Aufgabe 1</span><div class="progress-track" aria-hidden="true"><span id="progress-bar"></span></div></div>
+        </div>
+        <header class="starter-heading">
+          <p id="starter-kicker" class="eyebrow"></p>
+          <h1 id="starter-title"></h1>
+          <p id="starter-subtitle" class="lead"></p>
+          <div id="focus-chips" class="chips"></div>
+        </header>
+        <div id="task-area" class="task-area"></div>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="profile-dialog">
+    <form id="profile-form" method="dialog" class="dialog-card">
+      <p class="eyebrow">Dein Profil</p>
+      <h2>Anzeigename</h2>
+      <p>Nutze normalerweise deinen Vornamen. Bei doppelten Vornamen ergänze die Initiale deines Nachnamens, zum Beispiel „Melanie T.“. Ein Kursname wird nicht gespeichert.</p>
+      <label for="display-name">Anzeigename</label>
+      <input id="display-name" maxlength="40" autocomplete="name" required>
+      <p id="profile-error" class="form-message" aria-live="polite"></p>
+      <div class="dialog-actions"><button id="profile-cancel" class="button button-quiet" type="button">Abbrechen</button><button class="button button-primary" value="save">Speichern</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="import-dialog">
+    <div class="dialog-card">
+      <p class="eyebrow">Import prüfen</p>
+      <h2>Datei sicher einlesen</h2>
+      <div id="import-preview"></div>
+      <p>Vorhandene und importierte Bearbeitungen werden anhand stabiler IDs zusammengeführt. Neuere lokale Einträge bleiben erhalten.</p>
+      <div class="dialog-actions"><button id="import-cancel" class="button button-quiet" type="button">Abbrechen</button><button id="import-confirm" class="button button-primary" type="button">Zusammenführen</button></div>
+    </div>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <script src="data.js?v=2.0.0"></script>
+  <script src="app.js?v=2.0.2"></script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#17324d"><title>Lehrkraftauswertung · Ruta por España</title>
+  <link rel="stylesheet" href="styles.css?v=2.0.1"><link rel="stylesheet" href="teacher.css?v=2.0.0">
+</head>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+  <header class="site-header no-print"><a class="brand" href="./"><span class="brand-mark" aria-hidden="true">R</span><span><strong>Ruta por España</strong><small>Lehrkraftauswertung</small></span></a><nav class="teacher-nav"><a class="button button-secondary" href="lehrkraft-vorschau.html">Starter kontrollieren</a><a class="button button-quiet" href="codeliste.html">Codeliste drucken</a></nav></header>
+  <main id="main" class="teacher-main">
+    <section class="teacher-hero">
+      <div><p class="eyebrow">Nur lokal in diesem Browser</p><h1>Auswertung ohne Upload.</h1><p class="lead">Lies mehrere TXT-Dateien ein, filtere Lernspuren und exportiere die Übersicht als CSV. Keine Datei verlässt das Gerät.</p></div>
+      <label id="drop-zone" class="drop-zone" tabindex="0">TXT-Dateien hier ablegen oder auswählen<input id="files" type="file" accept=".txt,text/plain" multiple><span>Mehrere Dateien sind möglich.</span></label>
+    </section>
+
+    <section id="file-notices" aria-live="polite"></section>
+    <section class="card deployment-card" aria-labelledby="deployment-heading">
+      <div><p class="eyebrow">Einsatzdaten</p><h2 id="deployment-heading">Tatsächlicher Einsatz im Unterricht</h2><p>Abweichungen werden neutral markiert. Daraus folgt keine Aussage über Abwesenheit oder Täuschung.</p></div>
+      <div id="deployment-dates" class="date-grid"></div>
+    </section>
+
+    <section class="filters no-print" aria-label="Auswertung filtern">
+      <label>Person<select id="person-filter"><option value="">Alle Personen</option></select></label>
+      <label>Starter<select id="starter-filter"><option value="">Alle Starter</option></select></label>
+      <label>Kompetenz<select id="competency-filter"><option value="">Alle Kompetenzen</option></select></label>
+      <button id="csv-button" class="button button-secondary" type="button" disabled>Übersicht als CSV</button>
+      <button id="clear-button" class="button button-quiet" type="button" disabled>Ansicht leeren</button>
+    </section>
+
+    <section id="empty-dashboard" class="empty-dashboard"><span aria-hidden="true">↙</span><h2>Noch keine Ergebnisdateien</h2><p>Lies die kumulierten TXT-Dateien der Schülerinnen und Schüler ein.</p></section>
+    <div id="dashboard" hidden>
+      <section id="duplicate-warning"></section>
+      <section class="metric-grid" aria-label="Gesamtkennzahlen">
+        <article class="metric"><span>Personen</span><strong id="metric-people">0</strong></article>
+        <article class="metric"><span>Erstlösungsquote</span><strong id="metric-first">0%</strong></article>
+        <article class="metric"><span>Korrekturerfolg</span><strong id="metric-correction">0%</strong></article>
+        <article class="metric"><span>Ø Bearbeitungszeit</span><strong id="metric-time">–</strong></article>
+      </section>
+
+      <section class="card table-card"><div class="section-heading"><div><p class="eyebrow">Gesamtübersicht</p><h2>Pro Person</h2></div></div><div class="table-scroll"><table><thead><tr><th>Person</th><th>Fortschritt</th><th>Offen</th><th>Erstlösung</th><th>Korrekturen</th><th>Nachgeholt</th><th>Wiederholt</th><th>Zeit</th></tr></thead><tbody id="people-body"></tbody></table></div></section>
+
+      <div class="analytics-grid">
+        <section class="card"><p class="eyebrow">Starter</p><h2>Ergebnisse pro Starter</h2><div id="starter-bars" class="bar-list"></div></section>
+        <section class="card"><p class="eyebrow">Kompetenzen</p><h2>Erstlösungen</h2><div id="competency-bars" class="bar-list"></div></section>
+        <section class="card"><p class="eyebrow">Diagnose</p><h2>Fehlerkategorien</h2><div id="error-bars" class="bar-list"></div></section>
+        <section class="card"><p class="eyebrow">Antwortmuster</p><h2>Häufige falsche Erstlösungen</h2><ol id="wrong-list" class="wrong-list"></ol></section>
+      </div>
+
+      <section class="card table-card"><p class="eyebrow">Zeitbezug</p><h2>Bearbeitungen und Einsatzdatum</h2><div class="table-scroll"><table><thead><tr><th>Person</th><th>Starter</th><th>Modus</th><th>Beginn</th><th>Dauer</th><th>Vergleich</th></tr></thead><tbody id="attempt-body"></tbody></table></div></section>
+    </div>
+  </main>
+  <script src="data.js?v=2.0.0"></script><script src="teacher.js?v=2.0.1"></script>
+</body>
+</html>

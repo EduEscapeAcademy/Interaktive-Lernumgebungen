@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Codeliste · Ruta por España</title><link rel="stylesheet" href="styles.css?v=2.0.1">
+  <style>
+    body{background:#eef0eb}.print-page{width:min(100% - 2rem,210mm);margin:2rem auto;background:#fff;padding:18mm;box-shadow:var(--shadow)}.print-head{display:flex;justify-content:space-between;gap:2rem;border-bottom:3px solid var(--navy);padding-bottom:1rem;margin-bottom:1rem}.print-head h1{font:700 2.4rem/1 Georgia,serif;color:var(--navy);margin:.2rem 0}.print-meta{text-align:right;color:var(--muted)}.code-table{width:100%;border-collapse:collapse}.code-table th,.code-table td{border:1px solid #9da7ad;padding:.7rem;vertical-align:top}.code-table th{background:#edf0ef;color:var(--navy);text-transform:uppercase;font-size:.72rem;letter-spacing:.05em}.starter-num{text-align:center;font-weight:900;font-size:1.4rem}.access-code{font-weight:900;letter-spacing:.08em;color:var(--terracotta);white-space:nowrap}.date-line{display:block;border-bottom:1px solid #65717a;min-width:27mm;height:1.3rem}.check-box{display:inline-block;width:17px;height:17px;border:1.5px solid #263946;vertical-align:middle;margin-right:.3rem}.notes{height:25mm}.print-actions{display:flex;justify-content:center;gap:.7rem;margin:2rem}.privacy-note{font-size:.8rem;color:var(--muted);margin-top:1rem}
+    @page{size:A4 portrait;margin:8mm}@media print{body{background:#fff}.print-page{width:auto;margin:0;padding:4mm;box-shadow:none}.print-actions{display:none}.code-table{font-size:.78rem}.code-table th,.code-table td{padding:.3rem}.print-head{margin-bottom:.55rem;padding-bottom:.55rem}.print-head h1{font-size:1.7rem}.notes{height:9mm}.privacy-note{margin-top:.45rem}}
+  </style>
+</head>
+<body>
+  <div class="print-actions no-print"><a class="button button-quiet" href="lehrkraft.html">← Zur Auswertung</a><button class="button button-primary" onclick="window.print()">Liste drucken</button></div>
+  <main class="print-page">
+    <header class="print-head"><div><p class="eyebrow">Spanisch · Vorkurs</p><h1>Ruta por España</h1><p>Zugangscodes und Einsatznotizen</p></div><div class="print-meta">Kurs: ____________________<br>Schuljahr: _______________</div></header>
+    <table class="code-table">
+      <thead><tr><th>Nr.</th><th>Zugangscode</th><th>Titel / Schwerpunkt</th><th>Eingesetzt am</th><th>Erledigt / verbraucht</th></tr></thead>
+      <tbody id="code-rows"></tbody>
+    </table>
+    <p class="privacy-note">Hinweis: Die Codes sind für die mündliche Ausgabe im Unterricht gedacht. Schülerfortschritt wird ausschließlich lokal auf dem jeweiligen Gerät gespeichert.</p>
+  </main>
+  <script src="data.js?v=2.0.0"></script>
+  <script>
+    document.querySelector("#code-rows").innerHTML=window.RUTA_DATA.starters.map(s=>`<tr><td class="starter-num">${s.number}</td><td class="access-code">${s.code}</td><td><strong>${s.title}</strong><br><small>${s.focus.join(" · ")}</small><div class="notes"><small>Notiz:</small></div></td><td><span class="date-line"></span></td><td><span class="check-box" aria-hidden="true"></span> erledigt</td></tr>`).join("");
+  </script>
+</body>
+</html>
